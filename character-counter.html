@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Counter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .counter-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.6rem;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .counter-field {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            border-color: #667eea;
+        }
+
+        textarea.limit-reached {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .char-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .counter-text {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .counter-text.over {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .warning-message {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            min-height: 18px;
+            display: block;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="counter-container">
+        <h1>Message Writer</h1>
+        <p class="subtitle">Type your message below and watch the character counter update in real time.</p>
+
+        <div class="counter-field">
+            <label for="message">Your Message</label>
+            <textarea id="message" placeholder="Start typing your message here..." maxlength="200"></textarea>
+
+            <div class="char-counter">
+                <span class="counter-text" id="charCount">0/200 characters</span>
+                <span class="counter-text" id="remainingCount">200 characters max</span>
+            </div>
+
+            <span class="warning-message" id="warningMessage"></span>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+        const remainingCount = document.getElementById('remainingCount');
+        const warningMessage = document.getElementById('warningMessage');
+
+        const MAX_CHARS = 200;
+
+        // Event listener that tracks the input event to update the character counter in real time
+        textarea.addEventListener('input', function() {
+            let typed = textarea.value.length;
+            let remaining = MAX_CHARS - typed;
+
+            // Update the typed/remaining display
+            charCount.textContent = typed + '/' + MAX_CHARS + ' characters';
+            remainingCount.textContent = remaining + ' characters remaining';
+
+            // If the user exceeds the character limit, prevent further typing and display a warning
+            if (typed > MAX_CHARS) {
+                textarea.value = textarea.value.substring(0, MAX_CHARS);
+                typed = MAX_CHARS;
+                remaining = 0;
+                charCount.textContent = typed + '/' + MAX_CHARS + ' characters';
+                remainingCount.textContent = '0 characters remaining';
+                textarea.classList.add('limit-reached');
+                charCount.classList.add('over');
+                remainingCount.classList.add('over');
+                warningMessage.textContent = 'Character limit reached! You cannot type more than ' + MAX_CHARS + ' characters.';
+            } else {
+                textarea.classList.remove('limit-reached');
+                charCount.classList.remove('over');
+                remainingCount.classList.remove('over');
+                warningMessage.textContent = '';
+            }
+        });
+    </script>
+
+</body>
+</html>
